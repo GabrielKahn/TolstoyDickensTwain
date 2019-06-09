@@ -1,34 +1,42 @@
 ---
-title: "Homework Try 3"
+title: "Tolstoy, Dickens, and Twain"
 author: "Gabriel Kahn"
 date: "6/8/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyr)
 library(gutenbergr)
 library(scales)
 library(tidyverse)
 library(harrypotter)
+library(ggwordcloud)
+
+set.seed(666)
 ```
 
-```{r}
-gutenberg_authors
-
-```
-
-
-```{r}
-gutenberg_metadata %>% 
-  filter(gutenberg_author_id == 53)
-
-```
+#
 
 
 ```{r}
+# Complete works of Tolstoy
+Tolstoy <- gutenberg_download(c(243, 689, 985, 986, 1399, 1938, 2142, 2450, 2600, 2637)) %>% 
+    unnest_tokens(word, text) %>%
+  anti_join(stop_words)
 
+
+```
+
+```{r}
+Tolstoy %>% 
+  count(word, sort = TRUE)
+
+```
+
+```{r}
+# 8 Top works of Dickens
 Dickens <- gutenberg_download(c(46,98,564,580,588,644,650,653,675,676)) %>% 
     unnest_tokens(word, text) %>%
   anti_join(stop_words)
@@ -43,9 +51,13 @@ Dickens %>%
 ```
 
 ```{r}
+# Eight top twains
+
 Twain <- gutenberg_download(c(70,74,76,86,91,93,102,119,142,245)) %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words)
+
+Twain
 ```
 
 
@@ -55,40 +67,131 @@ Twain %>%
 ```
 
 ```{r}
-frequency <- bind_rows(mutate(tidy_bronte, author = "Brontë Sisters"),
-                       mutate(tidy_hgwells, author = "H.G. Wells"), 
-                       mutate(tidy_books, author = "Jane Austen")) %>% 
+
+Dickens %>%
+  group_by(word) %>%
+  count(sort = TRUE) %>%
+  ungroup() %>%
+  top_n(n = 150, wt = n) %>%
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
+  ggplot(aes(label = word, size = n, angle = angle)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size(range = c(2, 15)) +
+  ggtitle("Most frequent words in Charles Dickens") +
+  theme_minimal()
+
+
+Twain %>%
+  group_by(word) %>%
+  count(sort = TRUE) %>%
+  ungroup() %>%
+  top_n(n = 150, wt = n) %>%
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
+  ggplot(aes(label = word, size = n, angle = angle)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size(range = c(2, 15)) +
+  ggtitle("Most frequent tokens in Mark Twain") +
+  theme_minimal()
+
+
+set.seed(666)
+Tolstoy %>%
+  group_by(word) %>%
+  count(sort = TRUE) %>%
+  ungroup() %>%
+  top_n(n = 150, wt = n) %>%
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
+  ggplot(aes(label = word, size = n, angle = angle)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size(range = c(2, 15)) +
+  ggtitle("Most frequent words in Leo Tolstoy") +
+  theme_minimal()
+
+```
+
+```{r}
+TolComp <- bind_rows(mutate(Tolstoy, author = "Tolstoy"),
+                       mutate(Dickens, author = "Charles Dickens"), 
+                       mutate(Twain, author = "Mark Twain")) %>% 
   mutate(word = str_extract(word, "[a-z']+")) %>%
   count(author, word) %>%
   group_by(author) %>%
   mutate(proportion = n / sum(n)) %>% 
   select(-n) %>% 
   spread(author, proportion) %>% 
-  gather(author, proportion, `Brontë Sisters`:`H.G. Wells`)
+  gather(author, proportion, `Charles Dickens`: `Mark Twain`)
+
 
 ```
 
+
+
 ```{r}
 
-# expect a warning about rows with missing values being removed
-ggplot(frequency, aes(x = proportion, y = `Jane Austen`, color = abs(`Jane Austen` - proportion))) +
+ggplot(TolComp, aes(x = proportion, y = `Tolstoy`, color = abs(`Tolstoy` - proportion))) +
   geom_abline(color = "gray40", lty = 2) +
   geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
   geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
   scale_x_log10(labels = percent_format()) +
   scale_y_log10(labels = percent_format()) +
-  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
+  scale_colour_gradient2(limits = c(0,.001)) +
   facet_wrap(~author, ncol = 2) +
-  theme(legend.position="none") +
-  labs(y = "Jane Austen", x = NULL)
+  theme(legend.position= "none") +
+  labs(y = "Leo Tolstoy", x = NULL, title = "Word Correlation Between Tolstoy and Other Authors")
+
+```
+
+```{r}
+cor.test(data = TolComp[TolComp$author == "Mark Twain",],
+         ~ proportion + `Tolstoy`)
+
+cor.test(data = TolComp[TolComp$author == "Charles Dickens",], 
+         ~ proportion + `Tolstoy`)
+
+```
+
+
+
+
+```{r}
+DickComp <- bind_rows(mutate(Tolstoy, author = "Leo Tolstoy"),
+                       mutate(Dickens, author = "Charles Dickens"), 
+                       mutate(Twain, author = "Mark Twain")) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(author, word) %>%
+  group_by(author) %>%
+  mutate(proportion = n / sum(n)) %>% 
+  select(-n) %>% 
+  spread(author, proportion) %>% 
+  gather(author, proportion, `Leo Tolstoy`: `Mark Twain`)
+
 ```
 
 
 ```{r}
-cor.test(data = frequency[frequency$author == "Brontë Sisters",],
-         ~ proportion + `Jane Austen`)
-
-cor.test(data = frequency[frequency$author == "H.G. Wells",], 
-         ~ proportion + `Jane Austen`)
+ 
+ ggplot(DickComp, aes(x = proportion, y = `Charles Dickens`, color = abs(`Charles Dickens` - proportion))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_colour_gradient2(limits = c(0,.001)) +
+  facet_wrap(~author, ncol = 2) +
+  theme_minimal()+
+  theme(legend.position= "none") +
+  labs(y = "Charles Dickens", x = NULL, title = "Word Correlation Between Dickens and Other Authors")
 
 ```
+
+```{r}
+
+
+cor.test(data = DickComp[DickComp$author == "Leo Tolstoy",],
+         ~ proportion + `Charles Dickens`)
+
+cor.test(data = DickComp[DickComp$author == "Mark Twain",], 
+         ~ proportion + `Charles Dickens`)
+
+```
+
