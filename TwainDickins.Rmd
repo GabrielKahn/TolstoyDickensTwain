@@ -20,13 +20,7 @@ set.seed(666)
 ```
 
 
-```{r}
-gutenberg_authors
-# 53 37 136 (Twain, Dickens, Tolstoy)
 
-gutenberg_metadata %>% 
-  filter(gutenberg_author_id == 53)
-```
 # Introduction
 
 This project will look to compare the works of three of the most renowned 19th century writers from their respective countries, Leo Tolstoy from Russia, Charles Dickens from England, and Mark Twain from the United States. Coming from from the same time period, but different countries, how do their respective writing styles correlate and differ? Using the text analysis tools R provides can give us a better picture of how great authors perform their craft. Each author will be represented by text data from the eight top results according to Gutenberg.
@@ -51,13 +45,18 @@ Tolstoy <- gutenberg_download(c(243, 689, 985, 986, 1399, 1938, 2142, 2450, 2600
 
 ```{r}
 Tolstoy %>%
+  # select dataset
   group_by(word) %>%
+  # group by word
   count(sort = TRUE) %>%
+  # count number of individual words
   ungroup() %>%
   top_n(n = 150, wt = n) %>%
+  # pick most frequent
   mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
   ggplot(aes(label = word, size = n, angle = angle)) +
   geom_text_wordcloud_area(rm_outside = TRUE) +
+  # Create word cloud remove outside
   scale_size(range = c(2, 15)) +
   ggtitle("Most frequent words in Leo Tolstoy") +
   theme_minimal()
@@ -68,6 +67,50 @@ Tolstoy %>%
 
 As we see in the other word clouds, time is a central word. This may be do to its flexibility in use or perhaps due to the structure of the novel form itself, which describe actions which take place over the temporal dimension. This cloud is uniquely Russian, we see many Slavic names, but interestingly enough we also see "Pierre" which suggests that one of his novels dealt with the French. Knowing Russian history perhaps he wrote of the Napoleonic Wars. 
 
+
+```{r}
+# Create sentiment score Tolstoy
+SentTol <- Tolstoy %>% 
+     inner_join(get_sentiments("nrc")) %>% 
+  # join with sentiment
+ count(word, sentiment) %>% 
+  # count words with sentiment
+  arrange(desc(n)) %>% 
+  # arrange in descending order
+  group_by(sentiment) %>% 
+# group with like sentiments
+  mutate(top = seq_along(word)) %>% 
+  filter(top <= 10)
+# top ten words
+
+# Create plot
+SentTol %>%
+  ggplot(aes(x = -top, y = n, fill = sentiment)) + 
+  geom_col(color = "black") +
+  geom_text(aes(label = word), 
+            hjust = "left", 
+            size = 3, 
+            nudge_y = 25) +
+  labs(title = "Tolstoy's Most Frequent Words by Sentiment",
+       x = NULL,
+       y = "Word count") +
+  facet_wrap( ~ sentiment, ncol = 5) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 2000)) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank())
+
+
+
+
+```
+
+
+There are many interesting conclusions to be drawn from this chart. For one, we see the association of money with anger, which speaks to how it can be a strong source for disagreement. The generally positive associations of family words such as "mother" and "father show perhaps that family is a source of comfort and happiness in the books. There is also a dichotomy between black and white, with the latter used to express positive emotions and the former negative. We also see other tropes such as prison and war show up negatively in the chart.
+
+
 ## Charles Dickens
 ### England 1812-1870
 
@@ -77,14 +120,18 @@ Charles Dickens is one of the most beloved writers of all time. Through words he
 ```{r}
 # 8 Top works of Dickens
 Dickens <- gutenberg_download(c(46,98,564,580,588,644,650,653,675,676)) %>% 
-    unnest_tokens(word, text) %>%
+     unnest_tokens(word, text) %>%
   anti_join(stop_words)
 
 ```
 
 
 ## Word Cloud
+
 ```{r}
+
+# create Dickens wordcloud
+
 Dickens %>%
   group_by(word) %>%
   count(sort = TRUE) %>%
@@ -99,12 +146,49 @@ Dickens %>%
 
 ```
 
-At first glance, this wordcloud is quite different from Tolstoy's. It seems uniquely English; the largest word being "sir". While "eye" was prominent in Tolstoy's work, "hand" and "head" are body parts which take center place in Dicken's work.
+At first glance, this word cloud is quite different from Tolstoy's. It seems uniquely English; the largest word being "sir". While "eye" was prominent in Tolstoy's work, "hand" and "head" are body parts which take center place in Dicken's work.
+
+```{r}
+
+SentDick <- Dickens %>% 
+     inner_join(get_sentiments("nrc")) %>% 
+ count(word, sentiment) %>% 
+  arrange(desc(n)) %>% 
+  group_by(sentiment) %>% 
+  mutate(top = seq_along(word)) %>% 
+  filter(top <= 10)
+
+  
+SentDick %>%
+  ggplot(aes(x = -top, y = n, fill = sentiment)) + 
+  geom_col(color = "black") +
+  geom_text(aes(label = word),
+            hjust = "left",
+            size = 3, 
+            nudge_y = 25) +
+  labs(title = "Dickens Most Frequent Words by Sentiment",
+       x = NULL,
+       y = "Word count") +
+  facet_wrap( ~ sentiment, ncol = 5) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 1800)) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank())
+
+
+
+```
+
+Looking at this word chart, we see most strikingly that time is used as an anticipatory word, at a significantly higher rate than any other word for any other feeling. We also see that gentleman is used positively. Fire is an interesting word to see at the top of the fear column, even higher than death. "Boy" is used with a strong negative connotation in Dickens, perhaps characters say it in a fraternizing way.
+
 
 ## Mark Twain
 ### United States 1835 1910
 
-Perhaps the United Stae's most famous writer, Mak Twain was known for his humor and simplestic style. Born in Missouri, his subjects often tackled the hypocracy and oppression prominent in the day.
+Perhaps the United States most famous writer, Mark Twain was known for his humor and simplistic style. Born in Missouri, his subjects often tackled the hypocrisy and oppression prominent in the day.
 
 ```{r}
 # Eight top twains
@@ -117,6 +201,7 @@ Twain <- gutenberg_download(c(70,74,76,86,91,93,102,119,142,245)) %>%
 
 
 ## Word Cloud 
+
 ```{r}
 
 
@@ -137,7 +222,45 @@ Twain %>%
 ```
 
 
-Like Dicken's, "head" is also the most prominent body part in the word cloud. Perhaps this is an aspect of Anglocised writing versus Russian. The words in this cloud seem quite simple; their are few large words and the lexicon seems like what the commonperson would use in everyday speech.
+Like Dickens, "head" is also the most prominent body part in the word cloud. Perhaps this is an aspect of Anglicized writing versus Russian. The words in this cloud seem quite simple; their are few large words and the lexicon seems like what the common person would use in everyday speech.
+
+
+
+
+```{r}
+
+SentTwain <- Twain %>% 
+     inner_join(get_sentiments("nrc")) %>% 
+ count(word, sentiment) %>% 
+  arrange(desc(n)) %>% 
+  group_by(sentiment) %>% 
+  mutate(top = seq_along(word)) %>% 
+  filter(top <= 10)
+
+
+SentTwain %>%
+  ggplot(aes(x = -top, y = n, fill = sentiment)) + 
+  geom_col(color = "black") +
+  geom_text(aes(label = word), 
+            hjust = "left", 
+            size = 3, 
+            nudge_y = 25) +
+  labs(title = "Twain's Most Frequent Words by Sentiment",
+       x = NULL,
+       y = "Word count") +
+  facet_wrap( ~ sentiment, ncol = 5) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 1000)) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, 
+                                   hjust = 1),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank())
+
+```
+
+Like Tolstoy, money is also a cause for anger in the writings of Twain. We also see the joy of having "found" things, it is the most positively used word, perhaps conveying the sense of the childhood wonder of discovery which is a prevalent theme in such works as Tom Sawyer and Huckleberry Finn. Like Dickens, "fire" is a word used in a fearful context here. Unlike Tolstoy, we see "mother" appear in the negative column.
+
 
 ## Author Comparisons
 
@@ -193,7 +316,7 @@ cor.test(data = TolComp[TolComp$author == "Charles Dickens",],
 
 ```
 
-From the word cloud and the product moment correlation, we see that Tolstoy is more similar to Dickens than he is to Twain, but seemingly not to a large extent. The correlation coefficients are the same up until the hundreth place, but with so much data available, this may show meaningful stylistic comparisons to some extent.
+From the word cloud and the product moment correlation, we see that Tolstoy is more similar to Dickens than he is to Twain, but seemingly not to a large extent. The correlation coefficients are the same up until the hundredth place, but with so much data available, this may show meaningful stylistic comparisons to some extent.
 
 
 ```{r}
@@ -243,3 +366,47 @@ cor.test(data = DickComp[DickComp$author == "Mark Twain",],
 ```
 
 While we have already tested the relationship between Tolstoy and Dickens, we now see the relationship between Twain and Dickens. This relationship is interesting because it is the largest correlation we have seen thus far and shows that Dickens and Twain are the most similar in word choice.
+
+
+```{r}
+
+# Merge all authors with sentiments
+togethersent <- bind_rows(mutate(Tolstoy, author = "Tolstoy"),
+                       mutate(Dickens, author = "Charles Dickens"), 
+                       mutate(Twain, author = "Mark Twain")) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  group_by(author) %>% 
+  count(sentiment) %>% 
+  mutate(percent = n / sum(n))
+
+```
+
+```{r}
+
+# create plot
+
+  ggplot(togethersent, aes(x = sentiment, y = percent, fill = sentiment)) + 
+  geom_col(color = "black") +
+  geom_text(aes(label = sentiment), 
+            family = "Times", 
+            hjust = 0, 
+            angle = 90, 
+            size = 3, 
+            nudge_y = 0.005) +
+  labs(title = "19th Century Novelist Sentiment Chart",
+       x = "Sentiment",
+       y = "Percent of words") +
+  facet_wrap(. ~ author) +
+  scale_y_continuous(limits = c(0, 0.25)) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.ticks.x = element_blank(), 
+        axis.text.x = element_blank()) 
+
+```
+
+
+The above chart allows us to better see the general sentiment of each other and the result shows that each has similar feeling distributions to each other. Perhaps this distribution is part of writing a good book or it may be that many novels tend to follow a similar formula. We see that positive sentiments tend to outnumber negative by around 35%. Trust is the highest of the specific sentiments. Surprise and disgust are most rarely used. Perhaps if these sentiments are overused they lose their power.
+
+
+

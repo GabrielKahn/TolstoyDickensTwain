@@ -3,37 +3,6 @@ Tolstoy, Dickens, and Twain
 Gabriel Kahn
 6/8/2019
 
-    ## # A tibble: 16,236 x 7
-    ##    gutenberg_author~ author   alias birthdate deathdate wikipedia  aliases 
-    ##                <int> <chr>    <chr>     <int>     <int> <chr>      <chr>   
-    ##  1                 1 United ~ <NA>         NA        NA <NA>       <NA>    
-    ##  2                 3 Lincoln~ <NA>       1809      1865 http://en~ United ~
-    ##  3                 4 Henry, ~ <NA>       1736      1799 http://en~ <NA>    
-    ##  4                 5 Adam, P~ <NA>         NA        NA <NA>       <NA>    
-    ##  5                 7 Carroll~ Dodg~      1832      1898 http://en~ <NA>    
-    ##  6                 8 United ~ <NA>         NA        NA <NA>       Agency,~
-    ##  7                 9 Melvill~ Melv~      1819      1891 http://en~ <NA>    
-    ##  8                10 Barrie,~ Barr~      1860      1937 http://en~ <NA>    
-    ##  9                12 Smith, ~ Smit~      1805      1844 http://en~ <NA>    
-    ## 10                14 Madison~ Unit~      1751      1836 http://en~ <NA>    
-    ## # ... with 16,226 more rows
-
-    ## # A tibble: 214 x 8
-    ##    gutenberg_id title author gutenberg_autho~ language gutenberg_books~
-    ##           <int> <chr> <chr>             <int> <chr>    <chr>           
-    ##  1           70 What~ Twain~               53 en       <NA>            
-    ##  2           74 The ~ Twain~               53 en       Banned Books fr~
-    ##  3           76 Adve~ Twain~               53 en       Best Books Ever~
-    ##  4           86 A Co~ Twain~               53 en       Precursors of S~
-    ##  5           91 Tom ~ Twain~               53 en       <NA>            
-    ##  6           93 Tom ~ Twain~               53 en       <NA>            
-    ##  7          102 The ~ Twain~               53 en       <NA>            
-    ##  8          119 A Tr~ Twain~               53 en       <NA>            
-    ##  9          142 The ~ Twain~               53 en       <NA>            
-    ## 10          245 Life~ Twain~               53 en       <NA>            
-    ## # ... with 204 more rows, and 2 more variables: rights <chr>,
-    ## #   has_text <lgl>
-
 # Introduction
 
 This project will look to compare the works of three of the most
@@ -50,39 +19,100 @@ by text data from the eight top results according to Gutenberg.
 ### Russia 1828 - 1910
 
 Leo Tolstoy is considered by many to be one of the greatest novelists of
-all time.
+all time. His famous works include War and Peace and Anna Karenina. He
+has been often nominated for the Nobel Prize and was excommunicated from
+the church. His style has been described as realistic fiction and he is
+noted for the how he can convey complex messages in a lucid manor.
 
 ## Word Cloud
 
+![](TwainDickins_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+As we see in the other word clouds, time is a central word. This may be
+do to its flexibility in use or perhaps due to the structure of the
+novel form itself, which describe actions which take place over the
+temporal dimension. This cloud is uniquely Russian, we see many Slavic
+names, but interestingly enough we also see “Pierre” which suggests that
+one of his novels dealt with the French. Knowing Russian history perhaps
+he wrote of the Napoleonic Wars.
+
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+There are many interesting conclusions to be drawn from this chart. For
+one, we see the association of money with anger, which speaks to how it
+can be a strong source for disagreement. The generally positive
+associations of family words such as “mother” and "father show perhaps
+that family is a source of comfort and happiness in the books. There is
+also a dichonomy between black and whitee, with the latter used to
+express postive emotions and the former negative. We also see other
+tropes such as prison and war show up negatively in the chart.
 
 ## Charles Dickens
 
 ### England 1812-1870
 
+Charles Dickens is one of the most beloved writers of all time. Through
+words he painted pictures of the inequality present during the early
+Industrial Revolution. Often humorous and satiric in style, Dickens was
+also known to tackle some of the most pressing social issues of his
+time.
+
 ## Word Cloud
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+At first glance, this wordcloud is quite different from Tolstoy’s. It
+seems uniquely English; the largest word being “sir”. While “eye” was
+prominent in Tolstoy’s work, “hand” and “head” are body parts which take
+center place in Dicken’s work.
+
+![](TwainDickins_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+Looking at this wordchart, we see most strikingly that time is used as
+an anticipatory word, at a significantly higher rate than any other word
+for any other feeling. We also see that gentleman is used positively.
+Fire is an interesting word to see at the top of the fear column, even
+higher than death. “Boy” is used with a strong negative connotation in
+Dickens, perhaps characters say it in a paternizing way.
 
 ## Mark Twain
 
 ### United States 1835 1910
 
-What Is Man? and Other Essays Twain, Mark 74 The Adventures of Tom
-Sawyer Twain, Mark 76 Adventures of Huckleberry Finn Twain, Mark 86 A
-Connecticut Yankee in King Arthur’s Court Twain, Mark 91 Tom Sawyer
-Abroad Twain, Mark 93 Tom Sawyer, Detective Twain, Mark 102 The Tragedy
-of Pudd’nhead Wilson Twain, Mark 119 A Tramp Abroad Twain, Mark 142 The
-$30,000 Bequest, and Other Stories Twain, Mark 245 Life on the
-Mississippi
+Perhaps the United Stae’s most famous writer, Mak Twain was known for
+his humor and simplestic style. Born in Missouri, his subjects often
+tackled the hypocracy and oppression prominent in the day.
 
 ## Word Cloud
 
-![](TwainDickins_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](TwainDickins_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Like Dicken’s, “head” is also the most prominent body part in the word
+cloud. Perhaps this is an aspect of Anglocised writing versus Russian.
+The words in this cloud seem quite simple; their are few large words and
+the lexicon seems like what the commonperson would use in everyday
+speech.
+
+![](TwainDickins_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Like Tolstoy, money is also a cause for anger in the writings of Twain.
+We also see the joy of having “found” things, it is the most positively
+used word, perhaps conveying the sense of the childhood wonder of
+discovery which is a prevalent theme in such works as Tom Sawyer and
+Huckleberry Finn. Like Dickens, “fire” is a word used in a fearful
+context here. Unlike Tolstoy, we see “mother” appear in the negative
+column.
 
 ## Author Comparisons
 
-![](TwainDickins_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+We will now see how these word clouds correlate with each other,
+ultimately seeing which authors are most similar in style.
+
+### Tolstoy vs. Others
+
+![](TwainDickins_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+### Twain versus Tolstoy
 
     ## 
     ##  Pearson's product-moment correlation
@@ -96,6 +126,8 @@ Mississippi
     ##       cor 
     ## 0.6631122
 
+### Dickens versus Tolstoy
+
     ## 
     ##  Pearson's product-moment correlation
     ## 
@@ -108,7 +140,15 @@ Mississippi
     ##       cor 
     ## 0.6696074
 
-![](TwainDickins_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+From the word cloud and the product moment correlation, we see that
+Tolstoy is more similar to Dickens than he is to Twain, but seemingly
+not to a large extent. The correlation coefficients are the same up
+until the hundreth place, but with so much data available, this may show
+meaningful stylistic comparisons to some extent.
+
+![](TwainDickins_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+### Tolstoy versus Dickens
 
     ## 
     ##  Pearson's product-moment correlation
@@ -122,6 +162,8 @@ Mississippi
     ##       cor 
     ## 0.6696074
 
+### Twain versus Dickens
+
     ## 
     ##  Pearson's product-moment correlation
     ## 
@@ -133,3 +175,20 @@ Mississippi
     ## sample estimates:
     ##       cor 
     ## 0.6902566
+
+While we have already tested the relationship between Tolstoy and
+Dickens, we now see the relationship between Twain and Dickens. This
+relationship is interesting because it is the largest correlation we
+have seen thus far and shows that Dickens and Twain are the most similar
+in word choice.
+
+![](TwainDickins_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+The above chart allows us to better see the general sentiment of each
+other and the result shows that each has similar feeling distributions
+to each other. Perhaps this distribution is part of writing a good book
+or it may be that many novels tend to follow a similar formula. We see
+that positive sentiments tend to outnumber negative by around 35%. Trust
+is the highest of the specific sentiments. Surprise and disgust are most
+rarely used. Perhaps if these sentiments are overused they lose their
+power.
