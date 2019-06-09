@@ -13,12 +13,29 @@ library(scales)
 library(tidyverse)
 library(harrypotter)
 library(ggwordcloud)
-
+library(tidytext)
+library(knitr)
+library(kableExtra)
 set.seed(666)
 ```
 
-#
 
+```{r}
+gutenberg_authors
+# 53 37 136 (Twain, Dickens, Tolstoy)
+
+gutenberg_metadata %>% 
+  filter(gutenberg_author_id == 53)
+```
+# Introduction
+
+This project will look to compare the works of three of the most renowned 19th century writers from their respective countries, Leo Tolstoy from Russia, Charles Dickens from England, and Mark Twain from the United States. Coming from from the same time period, but different countries, how do their respective writing styles correlate and differ? Using the text analysis tools R provides can give us a better picture of how great authors perform their craft. Each author will be represented by text data from the eight top results according to Gutenberg.
+
+
+## Leo Tolstoy
+### Russia 1828 - 1910
+
+Leo Tolstoy is considered by many to be one of the greatest novelists of all time. His famous works include War and Peace and Anna Karenina. He has been often nominated for the Nobel Prize and was excommunicated from the church. His style has been described as realistic fiction and he is noted for the how he can convey complex messages in a lucid manor.
 
 ```{r}
 # Complete works of Tolstoy
@@ -29,11 +46,33 @@ Tolstoy <- gutenberg_download(c(243, 689, 985, 986, 1399, 1938, 2142, 2450, 2600
 
 ```
 
+
+## Word Cloud
+
 ```{r}
-Tolstoy %>% 
-  count(word, sort = TRUE)
+Tolstoy %>%
+  group_by(word) %>%
+  count(sort = TRUE) %>%
+  ungroup() %>%
+  top_n(n = 150, wt = n) %>%
+  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
+  ggplot(aes(label = word, size = n, angle = angle)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size(range = c(2, 15)) +
+  ggtitle("Most frequent words in Leo Tolstoy") +
+  theme_minimal()
+
 
 ```
+
+
+As we see in the other word clouds, time is a central word. This may be do to its flexibility in use or perhaps due to the structure of the novel form itself, which describe actions which take place over the temporal dimension. This cloud is uniquely Russian, we see many Slavic names, but interestingly enough we also see "Pierre" which suggests that one of his novels dealt with the French. Knowing Russian history perhaps he wrote of the Napoleonic Wars. 
+
+## Charles Dickens
+### England 1812-1870
+
+
+Charles Dickens is one of the most beloved writers of all time. Through words he painted pictures of the inequality present during the early Industrial Revolution. Often humorous and satiric in style, Dickens was also known to tackle some of the most pressing social issues of his time. 
 
 ```{r}
 # 8 Top works of Dickens
@@ -41,33 +80,11 @@ Dickens <- gutenberg_download(c(46,98,564,580,588,644,650,653,675,676)) %>%
     unnest_tokens(word, text) %>%
   anti_join(stop_words)
 
-Dickens
 ```
 
 
+## Word Cloud
 ```{r}
-Dickens %>%
-  count(word, sort = TRUE)
-```
-
-```{r}
-# Eight top twains
-
-Twain <- gutenberg_download(c(70,74,76,86,91,93,102,119,142,245)) %>%
-  unnest_tokens(word, text) %>%
-  anti_join(stop_words)
-
-Twain
-```
-
-
-```{r}
-Twain %>%
-  count(word, sort = TRUE)
-```
-
-```{r}
-
 Dickens %>%
   group_by(word) %>%
   count(sort = TRUE) %>%
@@ -79,6 +96,28 @@ Dickens %>%
   scale_size(range = c(2, 15)) +
   ggtitle("Most frequent words in Charles Dickens") +
   theme_minimal()
+
+```
+
+At first glance, this wordcloud is quite different from Tolstoy's. It seems uniquely English; the largest word being "sir". While "eye" was prominent in Tolstoy's work, "hand" and "head" are body parts which take center place in Dicken's work.
+
+## Mark Twain
+### United States 1835 1910
+
+Perhaps the United Stae's most famous writer, Mak Twain was known for his humor and simplestic style. Born in Missouri, his subjects often tackled the hypocracy and oppression prominent in the day.
+
+```{r}
+# Eight top twains
+
+Twain <- gutenberg_download(c(70,74,76,86,91,93,102,119,142,245)) %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+
+```
+
+
+## Word Cloud 
+```{r}
 
 
 Twain %>%
@@ -94,20 +133,18 @@ Twain %>%
   theme_minimal()
 
 
-set.seed(666)
-Tolstoy %>%
-  group_by(word) %>%
-  count(sort = TRUE) %>%
-  ungroup() %>%
-  top_n(n = 150, wt = n) %>%
-  mutate(angle = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(70, 30))) %>%
-  ggplot(aes(label = word, size = n, angle = angle)) +
-  geom_text_wordcloud_area(rm_outside = TRUE) +
-  scale_size(range = c(2, 15)) +
-  ggtitle("Most frequent words in Leo Tolstoy") +
-  theme_minimal()
 
 ```
+
+
+Like Dicken's, "head" is also the most prominent body part in the word cloud. Perhaps this is an aspect of Anglocised writing versus Russian. The words in this cloud seem quite simple; their are few large words and the lexicon seems like what the commonperson would use in everyday speech.
+
+## Author Comparisons
+
+We will now see how these word clouds correlate with each other, ultimately seeing which authors are most similar in style.
+
+
+### Tolstoy vs. Others
 
 ```{r}
 TolComp <- bind_rows(mutate(Tolstoy, author = "Tolstoy"),
@@ -141,16 +178,22 @@ ggplot(TolComp, aes(x = proportion, y = `Tolstoy`, color = abs(`Tolstoy` - propo
 
 ```
 
+### Twain versus Tolstoy
 ```{r}
 cor.test(data = TolComp[TolComp$author == "Mark Twain",],
          ~ proportion + `Tolstoy`)
 
+
+```
+
+### Dickens versus Tolstoy
+```{r}
 cor.test(data = TolComp[TolComp$author == "Charles Dickens",], 
          ~ proportion + `Tolstoy`)
 
 ```
 
-
+From the word cloud and the product moment correlation, we see that Tolstoy is more similar to Dickens than he is to Twain, but seemingly not to a large extent. The correlation coefficients are the same up until the hundreth place, but with so much data available, this may show meaningful stylistic comparisons to some extent.
 
 
 ```{r}
@@ -184,14 +227,19 @@ DickComp <- bind_rows(mutate(Tolstoy, author = "Leo Tolstoy"),
 
 ```
 
+### Tolstoy versus Dickens
 ```{r}
 
 
 cor.test(data = DickComp[DickComp$author == "Leo Tolstoy",],
          ~ proportion + `Charles Dickens`)
+```
 
+### Twain versus Dickens
+```{r}
 cor.test(data = DickComp[DickComp$author == "Mark Twain",], 
          ~ proportion + `Charles Dickens`)
 
 ```
 
+While we have already tested the relationship between Tolstoy and Dickens, we now see the relationship between Twain and Dickens. This relationship is interesting because it is the largest correlation we have seen thus far and shows that Dickens and Twain are the most similar in word choice.
