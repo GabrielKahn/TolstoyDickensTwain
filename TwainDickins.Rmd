@@ -96,7 +96,7 @@ SentTol %>%
        y = "Word count") +
   facet_wrap( ~ sentiment, ncol = 5) +
   coord_flip() +
-  scale_y_continuous(limits = c(0, 2000)) +
+  scale_y_continuous(limits = c(0, 3000)) +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45, hjust = 1),
         axis.ticks.y = element_blank(), 
@@ -165,13 +165,13 @@ SentDick %>%
   geom_text(aes(label = word),
             hjust = "left",
             size = 3, 
-            nudge_y = 25) +
+            nudge_y = 27) +
   labs(title = "Dickens Most Frequent Words by Sentiment",
        x = NULL,
        y = "Word count") +
   facet_wrap( ~ sentiment, ncol = 5) +
   coord_flip() +
-  scale_y_continuous(limits = c(0, 1800)) +
+  scale_y_continuous(limits = c(0, 2500)) +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45,
                                    hjust = 1),
@@ -182,7 +182,7 @@ SentDick %>%
 
 ```
 
-Looking at this word chart, we see most strikingly that time is used as an anticipatory word, at a significantly higher rate than any other word for any other feeling. We also see that gentleman is used positively. Fire is an interesting word to see at the top of the fear column, even higher than death. "Boy" is used with a strong negative connotation in Dickens, perhaps characters say it in a fraternizing way.
+Looking at this word chart, we see most strikingly that time is used as an anticipatory word, at a significantly higher rate than any other word for any other feeling. We also see that gentleman and sir are used positively. Fire is an interesting word to see at the top of the fear column, even higher than death. "Boy" is used with a strong negative connotation in Dickens, perhaps characters say it in a fraternizing way.
 
 
 ## Mark Twain
@@ -250,7 +250,7 @@ SentTwain %>%
        y = "Word count") +
   facet_wrap( ~ sentiment, ncol = 5) +
   coord_flip() +
-  scale_y_continuous(limits = c(0, 1000)) +
+  scale_y_continuous(limits = c(0, 800)) +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45, 
                                    hjust = 1),
@@ -261,6 +261,8 @@ SentTwain %>%
 
 Like Tolstoy, money is also a cause for anger in the writings of Twain. We also see the joy of having "found" things, it is the most positively used word, perhaps conveying the sense of the childhood wonder of discovery which is a prevalent theme in such works as Tom Sawyer and Huckleberry Finn. Like Dickens, "fire" is a word used in a fearful context here. Unlike Tolstoy, we see "mother" appear in the negative column.
 
+* Note
+The word time appears over 2000 times under the category of anticipation. Being that the next highest word in any category is under 800, I have left the scale as is, keeping in mind that anticipation is a function of time.
 
 ## Author Comparisons
 
@@ -388,11 +390,11 @@ togethersent <- bind_rows(mutate(Tolstoy, author = "Tolstoy"),
   ggplot(togethersent, aes(x = sentiment, y = percent, fill = sentiment)) + 
   geom_col(color = "black") +
   geom_text(aes(label = sentiment), 
-            family = "Times", 
             hjust = 0, 
             angle = 90, 
             size = 3, 
-            nudge_y = 0.005) +
+            nudge_y = 0.004) +
+  # keeps text above column
   labs(title = "19th Century Novelist Sentiment Chart",
        x = "Sentiment",
        y = "Percent of words") +

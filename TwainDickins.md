@@ -43,8 +43,8 @@ one, we see the association of money with anger, which speaks to how it
 can be a strong source for disagreement. The generally positive
 associations of family words such as “mother” and "father show perhaps
 that family is a source of comfort and happiness in the books. There is
-also a dichonomy between black and whitee, with the latter used to
-express postive emotions and the former negative. We also see other
+also a dichotomy between black and white, with the latter used to
+express positive emotions and the former negative. We also see other
 tropes such as prison and war show up negatively in the chart.
 
 ## Charles Dickens
@@ -61,36 +61,36 @@ time.
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-At first glance, this wordcloud is quite different from Tolstoy’s. It
+At first glance, this word cloud is quite different from Tolstoy’s. It
 seems uniquely English; the largest word being “sir”. While “eye” was
 prominent in Tolstoy’s work, “hand” and “head” are body parts which take
 center place in Dicken’s work.
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-Looking at this wordchart, we see most strikingly that time is used as
+Looking at this word chart, we see most strikingly that time is used as
 an anticipatory word, at a significantly higher rate than any other word
-for any other feeling. We also see that gentleman is used positively.
-Fire is an interesting word to see at the top of the fear column, even
-higher than death. “Boy” is used with a strong negative connotation in
-Dickens, perhaps characters say it in a paternizing way.
+for any other feeling. We also see that gentleman and sir are used
+positively. Fire is an interesting word to see at the top of the fear
+column, even higher than death. “Boy” is used with a strong negative
+connotation in Dickens, perhaps characters say it in a fraternizing way.
 
 ## Mark Twain
 
 ### United States 1835 1910
 
-Perhaps the United Stae’s most famous writer, Mak Twain was known for
-his humor and simplestic style. Born in Missouri, his subjects often
-tackled the hypocracy and oppression prominent in the day.
+Perhaps the United States most famous writer, Mark Twain was known for
+his humor and simplistic style. Born in Missouri, his subjects often
+tackled the hypocrisy and oppression prominent in the day.
 
 ## Word Cloud
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-Like Dicken’s, “head” is also the most prominent body part in the word
-cloud. Perhaps this is an aspect of Anglocised writing versus Russian.
+Like Dickens, “head” is also the most prominent body part in the word
+cloud. Perhaps this is an aspect of Anglicized writing versus Russian.
 The words in this cloud seem quite simple; their are few large words and
-the lexicon seems like what the commonperson would use in everyday
+the lexicon seems like what the common person would use in everyday
 speech.
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
@@ -102,6 +102,11 @@ discovery which is a prevalent theme in such works as Tom Sawyer and
 Huckleberry Finn. Like Dickens, “fire” is a word used in a fearful
 context here. Unlike Tolstoy, we see “mother” appear in the negative
 column.
+
+  - Note The word time appears over 2000 times under the category of
+    anticipation. Being that the next highest word in any category is
+    under 800, I have left the scale as is, keeping in mind that
+    anticipation is a function of time.
 
 ## Author Comparisons
 
@@ -143,8 +148,8 @@ ultimately seeing which authors are most similar in style.
 From the word cloud and the product moment correlation, we see that
 Tolstoy is more similar to Dickens than he is to Twain, but seemingly
 not to a large extent. The correlation coefficients are the same up
-until the hundreth place, but with so much data available, this may show
-meaningful stylistic comparisons to some extent.
+until the hundredth place, but with so much data available, this may
+show meaningful stylistic comparisons to some extent.
 
 ![](TwainDickins_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
